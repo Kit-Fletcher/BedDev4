@@ -1,0 +1,2 @@
+This project contains the following attributable resources:
+MapBodyBuilder.java class by Sion Dream - https://gamedev.stackexchange.com/questions/66924/how-can-i-convert-a-tilemap-to-a-box2d-world
