@@ -375,24 +375,34 @@ public class Level implements Screen {
             // Spawn a power up and the end of a wave, if there isn't already a powerUp on the level
             //#changed:   Added code for the new power ups here
             if (currentPowerUp == null) {
-
-                int random = (int)(Math.random() * 5 + 1);
-                switch(random) {
-                    case 1:
-                        currentPowerUp = new PowerUpHeal(this, player);
-                        break;
-                    case 2:
-                        currentPowerUp = new PowerUpSpeed(this, player);
-                        break;
-                    case 3:
-                        currentPowerUp = new PowerUpImmunity(this, player);
-                        break;
-                    case 4:
-                        currentPowerUp = new PowerUpInstaKill(this, player);
-                        break;
-                    case 5:
-                        currentPowerUp = new PowerUpInvisibility(this, player);
-                        break;
+            	if (currentWaveNumber == 2 && config.location == Zepr.Location.TOWN && parent.isCure1() == false) {
+            		currentPowerUp = new PowerUpCure1(this,player);
+            	}
+            	else if (currentWaveNumber == 3 && config.location == Zepr.Location.HALIFAX && parent.isCure2() == false) {
+            		currentPowerUp = new PowerUpCure2(this,player);
+            	}
+            	else if (currentWaveNumber == 4 && config.location == Zepr.Location.CENTRALHALL && parent.isCure3() == false) {
+            		currentPowerUp = new PowerUpCure3(this,player);
+            	}
+            	else {
+            		int random = (int)(Math.random() * 5 + 1);
+                    switch(random) {
+                        case 1:
+                            currentPowerUp = new PowerUpHeal(this, player);
+                            break;
+                        case 2:
+                            currentPowerUp = new PowerUpSpeed(this, player);
+                            break;
+                        case 3:
+                            currentPowerUp = new PowerUpImmunity(this, player);
+                            break;
+                        case 4:
+                            currentPowerUp = new PowerUpInstaKill(this, player);
+                            break;
+                        case 5:
+                            currentPowerUp = new PowerUpInvisibility(this, player);
+                            break;
+                    }
                 }
             }
 
