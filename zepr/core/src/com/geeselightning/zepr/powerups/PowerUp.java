@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.geeselightning.zepr.Level;
 import com.geeselightning.zepr.Player;
+import com.geeselightning.zepr.Zepr;
 
 public class PowerUp extends Sprite {
 
@@ -48,6 +49,13 @@ public class PowerUp extends Sprite {
         activePowerUp = powerUpString;
     }
 
+    public void activate(Zepr zepr) {
+    	timeRemaining = effectDuration;
+        active = true;
+        this.getTexture().dispose();
+        activePowerUp = powerUpString;
+	}
+    
     /**
      * Remove the power up effect from the player
      * #changed:   Added default text string
@@ -87,4 +95,6 @@ public class PowerUp extends Sprite {
     public boolean isActive() {
         return active;
     }
+
+	
 }

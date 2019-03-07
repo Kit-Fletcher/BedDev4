@@ -18,6 +18,8 @@ import com.geeselightning.zepr.screens.StoryScreen;
 
 public class Zepr extends Game {
 
+	
+	private boolean cure1, cure2, cure3 = false; 
 	private MenuScreen menuScreen;
 	public static AssetManager manager;
 
@@ -202,5 +204,29 @@ public class Zepr extends Game {
 	@Override
 	public void dispose() {
 		manager.dispose();
+	}
+
+	public boolean isCure3() {
+		return cure3;
+	}
+
+	public void setCure3(boolean cure3) {
+		this.cure3 = cure3;
+	}
+
+	public boolean isCure2() {
+		return cure2;
+	}
+
+	public void setCure2(boolean cure2) {
+		this.cure2 = cure2;
+	}
+
+	public boolean isCure1() {
+		return cure1;
+	}
+
+	public void setCure1(boolean cure1) {
+		this.cure1 = cure1;
 	}
 }
