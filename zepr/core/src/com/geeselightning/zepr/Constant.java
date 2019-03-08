@@ -16,6 +16,7 @@ public final class Constant {
     public static final int NPCMAXHP = 100;
     public static final int NPCDMG = 10;
     public static final int ZOMBIERANGE = 25;
+    public static final int NPCRANGE = 25; 
     public static final float ZOMBIEHITCOOLDOWN = 1;
     public static final float NERDYHPMULT = 1.5f;
     public static final float NERDYDMGMULT = 1;
