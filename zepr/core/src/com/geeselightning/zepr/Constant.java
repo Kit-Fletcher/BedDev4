@@ -11,7 +11,10 @@ public final class Constant {
     public static final float PLAYERHITCOOLDOWN = 0.2f;
     public static final float ZOMBIESPEED = 0.02f;
     public static final int ZOMBIEMAXHP = 100;
-    public static final int ZOMBIEDMG = 10;
+    public static final int ZOMBIEDMG = 10;  
+    public static final float NPCSPEED = 0.02f;
+    public static final int NPCMAXHP = 100;
+    public static final int NPCDMG = 10;
     public static final int ZOMBIERANGE = 25;
     public static final float ZOMBIEHITCOOLDOWN = 1;
     public static final float NERDYHPMULT = 1.5f;
