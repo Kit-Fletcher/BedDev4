@@ -16,7 +16,7 @@ public class NPC extends Character {
      * @param type the type of character to spawn
      *           
      */
-    public NPC(Vector2 NPCSpawn, World world, Type type) {
+    public NPC(Vector2 NPCSpawn, World world) {
         super(world);
 
         speed = Constant.NPCSPEED;
