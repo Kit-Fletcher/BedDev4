@@ -34,6 +34,7 @@ public class Level implements Screen {
     private OrthographicCamera camera;
     private static Player player;
     private ArrayList<Zombie> aliveZombies;
+    private ArrayList<NPC> aliveNPC;
     private ZeprInputProcessor inputProcessor;
     private boolean isPaused;
     private Stage stage;
@@ -43,6 +44,7 @@ public class Level implements Screen {
     private int currentWaveNumber;
     private int zombiesRemaining; // the number of zombies left to kill to complete the wave
     private int zombiesToSpawn; // the number of zombies that are left to be spawned this wave
+    private int npcsRemaining;
     private PowerUp currentPowerUp;
     //private Box2DDebugRenderer debugRenderer;
     private LevelConfig config;
@@ -71,6 +73,7 @@ public class Level implements Screen {
         
         skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
         aliveZombies = new ArrayList<>();
+        aliveNPC = new ArrayList<>();
         inputProcessor = new ZeprInputProcessor();
         
         progressLabel = new Label("", skin);
@@ -162,11 +165,19 @@ public class Level implements Screen {
         for (int i = 0; i < numberToSpawn; i++) {
             Zombie.Type type = config.waves[currentWaveNumber-1].zombieType;
             Zombie zombie = new Zombie(spawnPoints.get(i % spawnPoints.size()), world, type);
+            //NPC zombie = new NPC(spawnPoints.get(i % spawnPoints.size()), world);
             aliveZombies.add(zombie);
             if(type == Zombie.Type.BOSS2 && aliveZombies.size()==1)
                 originalBoss = zombie;
     }
 }
+    private void spawnNPC() {
+    	 for(Zombie zombie :aliveZombies) {
+    		 NPC npc = new NPC(zombie.getCenter(),world, zombie.getType());
+    		 aliveNPC.add(npc);
+    		 break;
+    	 }
+    }
 
     /**
      * Converts the mousePosition which is a Vector2 representing the coordinates of the mouse within the game window
@@ -300,6 +311,9 @@ public class Level implements Screen {
                 for (Zombie zombie : aliveZombies)
                     zombie.draw(batch);
 
+                for (NPC npc : aliveNPC)
+                    npc.draw(batch);
+
                 if (currentPowerUp != null) {
                     // Activate the powerup up if the player moves over it and it's not already active
                     // Only render the powerup if it is not active, otherwise it disappears
@@ -356,9 +370,13 @@ public class Level implements Screen {
                 zomb.dispose();
             }
         }
+        for(int i = 0; i < aliveNPC.size(); i++) {
+        	NPC npc = aliveNPC.get(i);
+        	npc.update(delta);
+        }
 
         zombiesRemaining = aliveZombies.size();
-
+        npcsRemaining = aliveNPC.size();
         // Resolve all possible attacks
         for (Zombie zombie : aliveZombies) {
             // Zombies will only attack if they are in range, the attack has cooled down, and they are
@@ -370,7 +388,7 @@ public class Level implements Screen {
             zombie.attack(player, delta);
         }
 
-        if (zombiesRemaining == 0) {
+        if (zombiesRemaining == 0 && npcsRemaining ==0) {
 
             // Spawn a power up and the end of a wave, if there isn't already a powerUp on the level
             //#changed:   Added code for the new power ups here
@@ -436,6 +454,7 @@ public class Level implements Screen {
 
             // Spawn all zombies in the stage
             spawnZombies(zombiesToSpawn, config.zombieSpawnPoints);
+            spawnNPC();
         }
 
         //Teleporting and minon spawning behavior for boss2
@@ -472,8 +491,21 @@ public class Level implements Screen {
 
         if(tutorialTable != null && currentWaveNumber == 1)
             tutorialLabel.setText("TUTORIAL WAVE \n\n Up: W \n Left: A \n Down: S \n Right: D \n Attack: Left Click \n Look: Mouse \n Special Ability: E");
+        checkCure();
     }
 
+    private void checkCure() {
+    	//TODO change to activate button or if you die?
+    	if (parent.isCure1() && parent.isCure2() && parent.isCure3()) {
+    		//TODO get rid of zombies (loop)
+    		//TODO Make a list of npcs from the zombies
+    	}
+    }
+    
+//    public ArrayList<NPC> getNPC() {
+//    	return aliveNPC;
+//    }
+    
     /**
      * Resize method, called when the game window is resized
      * @param width the new window width
@@ -513,6 +545,8 @@ public class Level implements Screen {
             currentPowerUp.getTexture().dispose();
         for (Zombie zombie : aliveZombies)
             zombie.dispose();
+        for (NPC npc : aliveNPC)
+            npc.dispose();
         player.dispose();
         
         Array<Body> bodies = new Array<>();
