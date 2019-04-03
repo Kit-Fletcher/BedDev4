@@ -24,6 +24,8 @@ public class Player extends Character {
     boolean ability = true;
     boolean abilityUsed = false;
     private long abilityCooldown;
+    private long zombieHealthTimer;
+    private boolean zombie = false;
     String abilityString;
 
     //#changed:   Added this enum
@@ -197,10 +199,18 @@ public class Player extends Character {
         }
        
         attackTime++;
-       
+        if(getZombie()) {
+        	if (zombieHealthTimer == 0L) {
+        		zombieHealthTimer = this.timer();
+        	}
+        	if(this.timer() > zombieHealthTimer+1) {
+        		zombieHealthTimer = this.timer();
+        		decrementHealth();
+        	}
+        }
         // Gives the player the attack texture for 0.1s after an attack.
         //if (hitRefresh <= 0.1 && getTexture() != attackTexture) {
-        if (attackReady && attackTime < 30) {
+        if (attackReady && attackTime < 30 && !zombie) {
             setTexture(attackTexture);
         	attacking = true;
         }
@@ -273,5 +283,25 @@ public class Player extends Character {
 
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
+    }
+    /**
+     * Changes the player to a zombie
+     */
+    public void setZombie() {
+    	zombie = true;
+    	//TODO change to the player zombie and figure out why it doesnt work right
+    	setRegion(new Texture("zombie01.png"));
+    	mainTexture = new Texture("zombie01.png");
+    }
+    
+    private void decrementHealth() {
+    	setHealth(getHealth()-10);
+    }
+    //TODO call when npc dies
+    public void incrementHealth() {
+    	setHealth(getHealth() +10);
+    }
+    public boolean getZombie() {
+    	return zombie;
     }
 }
