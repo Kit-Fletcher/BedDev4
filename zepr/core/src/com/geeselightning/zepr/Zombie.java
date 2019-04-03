@@ -9,6 +9,7 @@ public class Zombie extends Character {
 
     private int hitRange;
     public enum Type { ZOMBIE1, ZOMBIE2, ZOMBIE3, BOSS1, BOSS2 }
+    private Type type;
 
     /**
      * Constructor for the Zombie class
@@ -20,7 +21,7 @@ public class Zombie extends Character {
      */
     public Zombie(Vector2 zombieSpawn, World world, Type type) {
         super(world);
-
+        this.type = type;
         speed = Constant.ZOMBIESPEED;
         attackDamage = Constant.ZOMBIEDMG;
         maxhealth = Constant.ZOMBIEMAXHP;
@@ -103,5 +104,9 @@ public class Zombie extends Character {
             // update direction to face direction of travel
             direction = -(this.vectorToAngle(this.getLinearVelocity()));
         }
+    }
+    
+    public Type getType() {
+    	return type;
     }
 }
