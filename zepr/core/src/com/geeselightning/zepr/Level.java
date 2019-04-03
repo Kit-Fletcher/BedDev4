@@ -175,7 +175,6 @@ public class Level implements Screen {
     	 for(Zombie zombie :aliveZombies) {
     		 NPC npc = new NPC(zombie.getCenter(),world, zombie.getType());
     		 aliveNPC.add(npc);
-    		 break;
     	 }
     }
 
