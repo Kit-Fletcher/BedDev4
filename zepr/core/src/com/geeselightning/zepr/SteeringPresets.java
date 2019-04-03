@@ -37,6 +37,17 @@ public class SteeringPresets {
         Seek<Vector2> seek = new Seek<>(seeker, target);
         return seek;
     }
+    
+    /**
+     * Flee functionality for enemy movement
+     * @param fleer the enemy character that will move
+     * @param target the character to flee from
+     * @return flee preset
+     */
+    public static Flee<Vector2> getFlee(Character fleer, Character target){
+    	Flee<Vector2> flee = new Flee<>(fleer,target);
+    	return flee;
+    }
 
     /**
      * Arrive functionality for enemy movement
