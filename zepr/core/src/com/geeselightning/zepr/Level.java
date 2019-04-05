@@ -54,6 +54,7 @@ public class Level implements Screen {
     static Texture blank;
     private Zombie originalBoss;
     private Boolean useCure = false; 
+    
     /**
      * Constructor for the level
      * @param zepr the instance of the Zepr class to use
@@ -363,14 +364,15 @@ public class Level implements Screen {
 
         // When you die, end the level.
         if (player.health <= 0)
-        	if (player.getZombie()) {
-            	gameOver();
-            	useCure = false;
+        	//TODO change so player becomes zombie and zombies become npcs
+            if (player.getZombie()) {
+                gameOver();
+                useCure = false;
             } else {
-            	player.setZombie(true);
-            	useCure = true;
+                player.setZombie(true);
+                useCure = true;
             }
-        	
+            
 
         //#changed:   Moved this zombie removal code here from the Zombie class
         for(int i = 0; i < aliveZombies.size(); i++) {
@@ -420,10 +422,10 @@ public class Level implements Screen {
             	if (currentWaveNumber == 2 && config.location == Zepr.Location.TOWN && parent.isCure1() == false) {
             		currentPowerUp = new PowerUpCure1(this,player);
             	}
-            	else if (currentWaveNumber == 3 && config.location == Zepr.Location.HALIFAX && parent.isCure2() == false) {
+            	else if (currentWaveNumber == 1 && config.location == Zepr.Location.HALIFAX && parent.isCure2() == false) {
             		currentPowerUp = new PowerUpCure2(this,player);
             	}
-            	else if (currentWaveNumber == 4 && config.location == Zepr.Location.CENTRALHALL && parent.isCure3() == false) {
+            	else if (currentWaveNumber == 2 && config.location == Zepr.Location.CENTRALHALL && parent.isCure3() == false) {
             		currentPowerUp = new PowerUpCure3(this,player);
             	}
             	else {
@@ -519,11 +521,10 @@ public class Level implements Screen {
     }
 
     private void checkCure() {
-//    	parent.setCure1(true);
-//		parent.setCure2(true);
-//		parent.setCure3(true);
+    	//TODO change to activate button or if you die?
+ 
     	if (parent.isCure1() && parent.isCure2() && parent.isCure3() || useCure) {
-    		
+    		//TODO get rid of zombies (loop)
     		spawnNPC();
     		despawnZombies();
     		parent.setCure1(false);
