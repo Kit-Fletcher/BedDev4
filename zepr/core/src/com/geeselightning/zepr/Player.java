@@ -172,7 +172,7 @@ public class Player extends Character {
     public void respawn(Vector2 playerSpawn){
 
         setCharacterPosition(playerSpawn);
-        health = maxhealth;
+        health = 100;
     }
 
 
@@ -209,7 +209,7 @@ public class Player extends Character {
         	if (zombieHealthTimer == 0L) {
         		zombieHealthTimer = this.timer();
         	}
-        	if(this.timer() > zombieHealthTimer+1) {
+        	if(this.timer() > zombieHealthTimer+0.5) {
         		zombieHealthTimer = this.timer();
         		decrementHealth();
         	}
@@ -322,11 +322,11 @@ public class Player extends Character {
     }
     
     private void decrementHealth() {
-    	setHealth(getHealth()-10);
+    	setHealth(getHealth()-35);
     }
     //TODO call when npc dies
     public void incrementHealth() {
-    	setHealth(getHealth() +10);
+    	setHealth(getHealth() +20);
     }
     public boolean getZombie() {
     	return zombie;
