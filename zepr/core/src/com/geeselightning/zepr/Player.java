@@ -124,6 +124,8 @@ public class Player extends Character {
     	if(canHitGlobal(npc, 25)) {
     		npc.setHealth(0);
     		incrementHealth();
+    		 Sound sound = Zepr.manager.get("zombie_take_dmg.wav", Sound.class);
+             sound.play(0.2f);
     	}
     }
     /**
