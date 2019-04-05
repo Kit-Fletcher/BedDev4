@@ -322,13 +322,13 @@
   <object id="62" x="48.5" y="417" width="271.5" height="15.5"/>
   <object id="63" x="48.5" y="624" width="128" height="15.5"/>
   <object id="64" x="47" y="271" width="17.5" height="369"/>
-  <object id="65" x="1" y="960" width="975" height="17"/>
-  <object id="66" x="-1" y="0" width="17" height="975"/>
-  <object id="68" x="-9" y="-7" width="987" height="23"/>
+  <object id="65" name="wall" x="1" y="960" width="975" height="17"/>
+  <object id="66" name="wall" x="-1" y="0" width="17" height="975"/>
+  <object id="68" name="wall" x="-9" y="-7" width="987" height="23"/>
   <object id="69" x="946" y="-18" width="32" height="70"/>
-  <object id="71" x="969" y="272" width="8.5" height="146"/>
+  <object id="71" name="wall" x="969" y="272" width="8.5" height="146"/>
   <object id="72" x="1093.33" y="-228"/>
-  <object id="74" x="968.667" y="640.667" width="8" height="334.667"/>
+  <object id="74" name="wall" x="968.667" y="640.667" width="8" height="334.667"/>
   <object id="75" x="1036" y="761.333"/>
  </objectgroup>
 </map>
