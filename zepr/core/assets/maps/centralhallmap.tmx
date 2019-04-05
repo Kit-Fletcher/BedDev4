@@ -209,9 +209,9 @@
   <object id="10" x="589.917" y="288.333" width="4.25" height="387.75"/>
   <object id="14" x="319.742" y="0.151515" width="11.6667" height="80.3333"/>
   <object id="15" x="319.333" y="896.333" width="11.6667" height="65.3333"/>
-  <object id="16" x="-0.8335" y="0.66665" width="334.667" height="12.3334"/>
-  <object id="17" x="0.145994" y="13.5744" width="11.9412" height="932.57" rotation="-360.004"/>
-  <object id="18" x="-0.666833" y="947.167" width="334.667" height="12.3334"/>
+  <object id="16" name="wall" x="-0.8335" y="0.66665" width="334.667" height="12.3334"/>
+  <object id="17" name="wall" x="0.145994" y="13.5744" width="11.9412" height="932.57" rotation="-360.004"/>
+  <object id="18" name="wall" x="-0.666833" y="947.167" width="334.667" height="12.3334"/>
   <object id="26" x="592.545" y="286.545" width="253.409" height="3.81818"/>
   <object id="27" x="754.955" y="655.75" width="91.9091" height="20.3182"/>
   <object id="28" x="594.545" y="655.341" width="89.9091" height="20.3182"/>

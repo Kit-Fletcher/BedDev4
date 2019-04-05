@@ -45,7 +45,6 @@ public class Player extends Character {
 
         body.setFixedRotation(true);
         body.setLinearDamping(50.f);
-
         setCharacterPosition(playerSpawn);
         refreshAttributes();
     }
@@ -121,7 +120,12 @@ public class Player extends Character {
             hitRefresh += delta;
         }
     
-    
+    public void turnNPC(NPC npc, float delta) {
+    	if(canHitGlobal(npc, 25)) {
+    		npc.setHealth(0);
+    		incrementHealth();
+    	}
+    }
     /**
      * Manages the abilities when special ability is triggered by E
      * #changed:   Added this method

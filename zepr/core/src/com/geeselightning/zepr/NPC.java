@@ -59,6 +59,9 @@ public class NPC extends Character {
             // update direction to face direction of travel
             direction = -(this.vectorToAngle(this.getLinearVelocity()));
         }
+        if(checkCollision()) {
+        	this.setHealth(0);
+        }
     }
 
     

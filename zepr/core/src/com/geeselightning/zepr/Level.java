@@ -118,19 +118,21 @@ public class Level implements Screen {
         //debugRenderer = new Box2DDebugRenderer();
         
         MapBodyBuilder.buildShapes(map, Constant.PHYSICSDENSITY / Constant.WORLDSCALE, world);
-
-        
+  
         // It is only possible to view the render of the map through an orthographic camera.
         camera = new OrthographicCamera();
 
         //reset player instance
         player.respawn(config.playerSpawn);
-
+        
+        //Sets the player to a zombie for testing purposes
+        //player.setZombie();
+        
         Gdx.input.setInputProcessor(inputProcessor);
 
         teleportCounter = 0;
         currentWaveNumber = 0;
-
+        world.setContactListener(new CustomContactListener());
         resumeGame();
     }
 
@@ -348,7 +350,7 @@ public class Level implements Screen {
 
         player.update(delta);
         player.look(getMouseWorldCoordinates());
-
+       
         //#changed:   Added tutorial text code
         if(tutorialTable != null && currentWaveNumber > 1) {
             tutorialTable.clear();
@@ -356,6 +358,7 @@ public class Level implements Screen {
 
         // When you die, end the level.
         if (player.health <= 0)
+        	//TODO change so player becomes zombie and zombies become npcs
             gameOver();
 
         //#changed:   Moved this zombie removal code here from the Zombie class
@@ -372,19 +375,30 @@ public class Level implements Screen {
         for(int i = 0; i < aliveNPC.size(); i++) {
         	NPC npc = aliveNPC.get(i);
         	npc.update(delta);
+        	if (npc.getHealth() <= 0) {
+                npcsRemaining--;
+                aliveNPC.remove(npc);
+                npc.dispose();
+            }
         }
 
         zombiesRemaining = aliveZombies.size();
         npcsRemaining = aliveNPC.size();
         // Resolve all possible attacks
-        for (Zombie zombie : aliveZombies) {
-            // Zombies will only attack if they are in range, the attack has cooled down, and they are
-            // facing a player.
-            // Player will only attack in the reverse situation but player.attack must also be true. This is
-            //controlled by the ZeprInputProcessor. So the player will only attack when the user clicks.
-            if (player.isAttackReady())
-                player.attack(zombie, delta);
-            zombie.attack(player, delta);
+        if (player.getZombie()) {
+        	for (NPC npc : aliveNPC) {
+        		player.turnNPC(npc, delta);
+        	}
+        }else {
+            for (Zombie zombie : aliveZombies) {
+                // Zombies will only attack if they are in range, the attack has cooled down, and they are
+                // facing a player.
+                // Player will only attack in the reverse situation but player.attack must also be true. This is
+                //controlled by the ZeprInputProcessor. So the player will only attack when the user clicks.
+                if (player.isAttackReady())
+                    player.attack(zombie, delta);
+                zombie.attack(player, delta);
+            }
         }
 
         if (zombiesRemaining == 0 && npcsRemaining ==0) {
@@ -423,7 +437,7 @@ public class Level implements Screen {
                 }
             }
 
-
+            //TODO check if zombies or NPCs are not there to start next wave
             if (currentWaveNumber > config.waves.length) {
                 // Level completed, back to select screen and complete stage.
                 isPaused = true;
