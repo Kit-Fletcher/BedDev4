@@ -363,8 +363,7 @@ public class Level implements Screen {
 
         // When you die, end the level.
         if (player.health <= 0)
-        	//TODO change so player becomes zombie and zombies become npcs
-            if (player.getZombie()) {
+        	if (player.getZombie()) {
             	gameOver();
             	useCure = false;
             } else {
@@ -520,12 +519,11 @@ public class Level implements Screen {
     }
 
     private void checkCure() {
-    	//TODO change to activate button or if you die?
 //    	parent.setCure1(true);
 //		parent.setCure2(true);
 //		parent.setCure3(true);
     	if (parent.isCure1() && parent.isCure2() && parent.isCure3() || useCure) {
-    		//TODO get rid of zombies (loop)
+    		
     		spawnNPC();
     		despawnZombies();
     		parent.setCure1(false);
