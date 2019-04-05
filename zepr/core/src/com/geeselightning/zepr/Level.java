@@ -53,7 +53,7 @@ public class Level implements Screen {
     private Label progressLabel, healthLabel, powerUpLabel, abilityLabel, tutorialLabel;
     static Texture blank;
     private Zombie originalBoss;
-
+    private Boolean useCure = false; 
     /**
      * Constructor for the level
      * @param zepr the instance of the Zepr class to use
@@ -364,7 +364,14 @@ public class Level implements Screen {
         // When you die, end the level.
         if (player.health <= 0)
         	//TODO change so player becomes zombie and zombies become npcs
-            gameOver();
+            if (player.getZombie()) {
+            	gameOver();
+            	useCure = false;
+            } else {
+            	player.setZombie(true);
+            	useCure = true;
+            }
+        	
 
         //#changed:   Moved this zombie removal code here from the Zombie class
         for(int i = 0; i < aliveZombies.size(); i++) {
@@ -517,7 +524,7 @@ public class Level implements Screen {
 //    	parent.setCure1(true);
 //		parent.setCure2(true);
 //		parent.setCure3(true);
-    	if (parent.isCure1() && parent.isCure2() && parent.isCure3()) {
+    	if (parent.isCure1() && parent.isCure2() && parent.isCure3() || useCure) {
     		//TODO get rid of zombies (loop)
     		spawnNPC();
     		despawnZombies();
