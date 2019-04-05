@@ -293,11 +293,32 @@ public class Player extends Character {
     /**
      * Changes the player to a zombie
      */
-    public void setZombie() {
-    	zombie = true;
+    public void setZombie(boolean zomb) {
+    	zombie = zomb;
     	//TODO change to the player zombie and figure out why it doesnt work right
-    	setRegion(new Texture("zombie01.png"));
-    	mainTexture = new Texture("zombie01.png");
+    	if (zombie) {
+    		setRegion(new Texture("zombie01.png"));
+        	mainTexture = new Texture("zombie01.png");
+        	setHealth(Constant.PLAYERMAXHP);
+    	}else {
+    		setHealth(Constant.PLAYERMAXHP);
+    		if (playertype == PlayerType.NERDY) {
+    			setRegion(new Texture("player01.png"));
+                mainTexture = new Texture("player01.png");
+                attackTexture = new Texture("player01_attack.png");
+            }
+            else if (playertype == PlayerType.SPORTY) {
+            	setRegion(new Texture("player02.png"));
+                mainTexture = new Texture("player02.png");
+                attackTexture = new Texture("player02_attack.png");
+            }
+            else {
+            	setRegion(new Texture("player03.png"));
+                mainTexture = new Texture("player03.png");
+                attackTexture = new Texture("player03_attack.png");
+            }
+    	}
+    	
     }
     
     private void decrementHealth() {
