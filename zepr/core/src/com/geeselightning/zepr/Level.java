@@ -180,6 +180,11 @@ public class Level implements Screen {
     	 }
     }
 
+    private void despawnZombies() {
+    	for ( Zombie zombie : aliveZombies) {
+    		zombie.setHealth(0);
+    	}
+    }
     /**
      * Converts the mousePosition which is a Vector2 representing the coordinates of the mouse within the game window
      * to a Vector2 of the equivalent coordinates in the world.
@@ -467,7 +472,7 @@ public class Level implements Screen {
 
             // Spawn all zombies in the stage
             spawnZombies(zombiesToSpawn, config.zombieSpawnPoints);
-            spawnNPC();
+            //spawnNPC();
         }
 
         //Teleporting and minon spawning behavior for boss2
@@ -509,9 +514,16 @@ public class Level implements Screen {
 
     private void checkCure() {
     	//TODO change to activate button or if you die?
+//    	parent.setCure1(true);
+//		parent.setCure2(true);
+//		parent.setCure3(true);
     	if (parent.isCure1() && parent.isCure2() && parent.isCure3()) {
     		//TODO get rid of zombies (loop)
-    		//TODO Make a list of npcs from the zombies
+    		spawnNPC();
+    		despawnZombies();
+    		parent.setCure1(false);
+    		parent.setCure2(false);
+    		parent.setCure3(false);
     	}
     }
     
