@@ -13,7 +13,7 @@ public class NPC extends Character {
     private int hitRange;
     //public enum Type { ZOMBIE1, ZOMBIE2, ZOMBIE3, BOSS1, BOSS2 }
     /**
-     * Constructor for the Zombie class
+     * Constructor for the NPC class
      * @param NPCSpawn the coordinates to spawn the NPC at
      * @param world the Box2D world to add the zombie to
      * @param type the type of character to spawn
