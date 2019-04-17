@@ -35,6 +35,7 @@ public class Level implements Screen {
     private OrthographicCamera camera;
     private static Player player;
     private ArrayList<Zombie> aliveZombies;
+    private ArrayList<NPC> aliveNPC;
     private ZeprInputProcessor inputProcessor;
     private boolean isPaused;
     private Stage stage;
@@ -44,6 +45,7 @@ public class Level implements Screen {
     private int currentWaveNumber;
     private int zombiesRemaining; // the number of zombies left to kill to complete the wave
     private int zombiesToSpawn; // the number of zombies that are left to be spawned this wave
+    private int npcsRemaining;
     private PowerUp currentPowerUp;
     //private Box2DDebugRenderer debugRenderer;
     private LevelConfig config;
@@ -52,7 +54,8 @@ public class Level implements Screen {
     private Label progressLabel, healthLabel, powerUpLabel, abilityLabel, tutorialLabel;
     static Texture blank;
     private Zombie originalBoss;
-
+    private Boolean useCure = false; 
+    
     /**
      * Constructor for the level
      * @param zepr the instance of the Zepr class to use
@@ -72,6 +75,7 @@ public class Level implements Screen {
         
         skin = new Skin(Gdx.files.internal("skin/pixthulhu-ui.json"));
         aliveZombies = new ArrayList<>();
+        aliveNPC = new ArrayList<>();
         inputProcessor = new ZeprInputProcessor();
         
         progressLabel = new Label("", skin);
@@ -116,19 +120,21 @@ public class Level implements Screen {
         //debugRenderer = new Box2DDebugRenderer();
         
         MapBodyBuilder.buildShapes(map, Constant.PHYSICSDENSITY / Constant.WORLDSCALE, world);
-
-        
+  
         // It is only possible to view the render of the map through an orthographic camera.
         camera = new OrthographicCamera();
 
         //reset player instance
         player.respawn(config.playerSpawn);
-
+        
+        //Sets the player to a zombie for testing purposes
+        //player.setZombie();
+        
         Gdx.input.setInputProcessor(inputProcessor);
 
         teleportCounter = 0;
         currentWaveNumber = 0;
-
+        world.setContactListener(new CustomContactListener());
         resumeGame();
     }
 
@@ -163,12 +169,24 @@ public class Level implements Screen {
         for (int i = 0; i < numberToSpawn; i++) {
             Zombie.Type type = config.waves[currentWaveNumber-1].zombieType;
             Zombie zombie = new Zombie(spawnPoints.get(i % spawnPoints.size()), world, type);
+            //NPC zombie = new NPC(spawnPoints.get(i % spawnPoints.size()), world);
             aliveZombies.add(zombie);
             if(type == Zombie.Type.BOSS2 && aliveZombies.size()==1)
                 originalBoss = zombie;
     }
 }
+    private void spawnNPC() {
+    	 for(Zombie zombie :aliveZombies) {
+    		 NPC npc = new NPC(zombie.getCenter(),world, zombie.getType());
+    		 aliveNPC.add(npc);
+    	 }
+    }
 
+    private void despawnZombies() {
+    	for ( Zombie zombie : aliveZombies) {
+    		zombie.setHealth(0);
+    	}
+    }
     /**
      * Converts the mousePosition which is a Vector2 representing the coordinates of the mouse within the game window
      * to a Vector2 of the equivalent coordinates in the world.
@@ -309,6 +327,9 @@ public class Level implements Screen {
                 for (Zombie zombie : aliveZombies)
                     zombie.draw(batch);
 
+                for (NPC npc : aliveNPC)
+                    npc.draw(batch);
+
                 if (currentPowerUp != null) {
                     // Activate the powerup up if the player moves over it and it's not already active
                     // Only render the powerup if it is not active, otherwise it disappears
@@ -344,7 +365,7 @@ public class Level implements Screen {
 
         player.update(delta);
         player.look(getMouseWorldCoordinates());
-
+       
         //#changed:   Added tutorial text code
         if(tutorialTable != null && currentWaveNumber > 1) {
             tutorialTable.clear();
@@ -352,7 +373,15 @@ public class Level implements Screen {
 
         // When you die, end the level.
         if (player.health <= 0)
-            gameOver();
+        	//TODO change so player becomes zombie and zombies become npcs
+            if (player.getZombie()) {
+                gameOver();
+                useCure = false;
+            } else {
+                player.setZombie(true);
+                useCure = true;
+            }
+            
 
         //#changed:   Moved this zombie removal code here from the Zombie class
         for(int i = 0; i < aliveZombies.size(); i++) {
@@ -365,21 +394,36 @@ public class Level implements Screen {
                 zomb.dispose();
             }
         }
-
-        zombiesRemaining = aliveZombies.size();
-
-        // Resolve all possible attacks
-        for (Zombie zombie : aliveZombies) {
-            // Zombies will only attack if they are in range, the attack has cooled down, and they are
-            // facing a player.
-            // Player will only attack in the reverse situation but player.attack must also be true. This is
-            //controlled by the ZeprInputProcessor. So the player will only attack when the user clicks.
-            if (player.isAttackReady())
-                player.attack(zombie, delta);
-            zombie.attack(player, delta);
+        for(int i = 0; i < aliveNPC.size(); i++) {
+        	NPC npc = aliveNPC.get(i);
+        	npc.update(delta);
+        	if (npc.getHealth() <= 0) {
+                npcsRemaining--;
+                aliveNPC.remove(npc);
+                npc.dispose();
+            }
         }
 
-        if (zombiesRemaining == 0) {
+        zombiesRemaining = aliveZombies.size();
+        npcsRemaining = aliveNPC.size();
+        // Resolve all possible attacks
+        if (player.getZombie()) {
+        	for (NPC npc : aliveNPC) {
+        		player.turnNPC(npc, delta);
+        	}
+        }else {
+            for (Zombie zombie : aliveZombies) {
+                // Zombies will only attack if they are in range, the attack has cooled down, and they are
+                // facing a player.
+                // Player will only attack in the reverse situation but player.attack must also be true. This is
+                //controlled by the ZeprInputProcessor. So the player will only attack when the user clicks.
+                if (player.isAttackReady())
+                    player.attack(zombie, delta);
+                zombie.attack(player, delta);
+            }
+        }
+
+        if (zombiesRemaining == 0 && npcsRemaining ==0) {
 
             // Spawn a power up and the end of a wave, if there isn't already a powerUp on the level
             //#changed:   Added code for the new power ups here
@@ -387,10 +431,10 @@ public class Level implements Screen {
             	if (currentWaveNumber == 2 && config.location == Zepr.Location.TOWN && parent.isCure1() == false) {
             		currentPowerUp = new PowerUpCure1(this,player);
             	}
-            	else if (currentWaveNumber == 3 && config.location == Zepr.Location.HALIFAX && parent.isCure2() == false) {
+            	else if (currentWaveNumber == 1 && config.location == Zepr.Location.HALIFAX && parent.isCure2() == false) {
             		currentPowerUp = new PowerUpCure2(this,player);
             	}
-            	else if (currentWaveNumber == 4 && config.location == Zepr.Location.CENTRALHALL && parent.isCure3() == false) {
+            	else if (currentWaveNumber == 2 && config.location == Zepr.Location.CENTRALHALL && parent.isCure3() == false) {
             		currentPowerUp = new PowerUpCure3(this,player);
             	}
             	else {
@@ -415,7 +459,7 @@ public class Level implements Screen {
                 }
             }
 
-
+            //TODO check if zombies or NPCs are not there to start next wave
             if (currentWaveNumber > config.waves.length) {
                 // Level completed, back to select screen and complete stage.
                 isPaused = true;
@@ -445,6 +489,7 @@ public class Level implements Screen {
 
             // Spawn all zombies in the stage
             spawnZombies(zombiesToSpawn, config.zombieSpawnPoints);
+            //spawnNPC();
         }
 
         //Teleporting and minon spawning behavior for boss2
@@ -481,8 +526,26 @@ public class Level implements Screen {
 
         if(tutorialTable != null && currentWaveNumber == 1)
             tutorialLabel.setText("TUTORIAL WAVE \n\n Up: W \n Left: A \n Down: S \n Right: D \n Attack: Left Click \n Look: Mouse \n Special Ability: E");
+        checkCure();
     }
 
+    private void checkCure() {
+    	//TODO change to activate button or if you die?
+ 
+    	if (parent.isCure1() && parent.isCure2() && parent.isCure3() || useCure) {
+    		//TODO get rid of zombies (loop)
+    		spawnNPC();
+    		despawnZombies();
+    		parent.setCure1(false);
+    		parent.setCure2(false);
+    		parent.setCure3(false);
+    	}
+    }
+    
+//    public ArrayList<NPC> getNPC() {
+//    	return aliveNPC;
+//    }
+    
     /**
      * Resize method, called when the game window is resized
      * @param width the new window width
@@ -522,6 +585,8 @@ public class Level implements Screen {
             currentPowerUp.getTexture().dispose();
         for (Zombie zombie : aliveZombies)
             zombie.dispose();
+        for (NPC npc : aliveNPC)
+            npc.dispose();
         player.dispose();
         
         Array<Body> bodies = new Array<>();

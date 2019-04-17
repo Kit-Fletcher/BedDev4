@@ -24,6 +24,8 @@ public class Player extends Character {
     boolean ability = true;
     boolean abilityUsed = false;
     private long abilityCooldown;
+    private long zombieHealthTimer;
+    private boolean zombie = false;
     String abilityString;
 
     //#changed:   Added this enum
@@ -43,7 +45,6 @@ public class Player extends Character {
 
         body.setFixedRotation(true);
         body.setLinearDamping(50.f);
-
         setCharacterPosition(playerSpawn);
         refreshAttributes();
     }
@@ -119,7 +120,14 @@ public class Player extends Character {
             hitRefresh += delta;
         }
     
-    
+    public void turnNPC(NPC npc, float delta) {
+    	if(canHitGlobal(npc, 25)) {
+    		npc.setHealth(0);
+    		incrementHealth();
+    		 Sound sound = Zepr.manager.get("zombie_take_dmg.wav", Sound.class);
+             sound.play(0.2f);
+    	}
+    }
     /**
      * Manages the abilities when special ability is triggered by E
      * #changed:   Added this method
@@ -164,7 +172,7 @@ public class Player extends Character {
     public void respawn(Vector2 playerSpawn){
 
         setCharacterPosition(playerSpawn);
-        health = maxhealth;
+        health = 100;
     }
 
 
@@ -197,10 +205,18 @@ public class Player extends Character {
         }
        
         attackTime++;
-       
+        if(getZombie()) {
+        	if (zombieHealthTimer == 0L) {
+        		zombieHealthTimer = this.timer();
+        	}
+        	if(this.timer() > zombieHealthTimer+0.5) {
+        		zombieHealthTimer = this.timer();
+        		decrementHealth();
+        	}
+        }
         // Gives the player the attack texture for 0.1s after an attack.
         //if (hitRefresh <= 0.1 && getTexture() != attackTexture) {
-        if (attackReady && attackTime < 30) {
+        if (attackReady && attackTime < 30 && !zombie) {
             setTexture(attackTexture);
         	attacking = true;
         }
@@ -273,5 +289,46 @@ public class Player extends Character {
 
     public void setAttacking(boolean attacking) {
         this.attacking = attacking;
+    }
+    /**
+     * Changes the player to a zombie
+     */
+    public void setZombie(boolean zomb) {
+    	zombie = zomb;
+    	//TODO change to the player zombie and figure out why it doesnt work right
+    	if (zombie) {
+    		setRegion(new Texture("zombie01.png"));
+        	mainTexture = new Texture("zombie01.png");
+        	setHealth(Constant.PLAYERMAXHP);
+    	}else {
+    		setHealth(Constant.PLAYERMAXHP);
+    		if (playertype == PlayerType.NERDY) {
+    			setRegion(new Texture("player01.png"));
+                mainTexture = new Texture("player01.png");
+                attackTexture = new Texture("player01_attack.png");
+            }
+            else if (playertype == PlayerType.SPORTY) {
+            	setRegion(new Texture("player02.png"));
+                mainTexture = new Texture("player02.png");
+                attackTexture = new Texture("player02_attack.png");
+            }
+            else {
+            	setRegion(new Texture("player03.png"));
+                mainTexture = new Texture("player03.png");
+                attackTexture = new Texture("player03_attack.png");
+            }
+    	}
+    	
+    }
+    
+    private void decrementHealth() {
+    	setHealth(getHealth()-35);
+    }
+    //TODO call when npc dies
+    public void incrementHealth() {
+    	setHealth(getHealth() +20);
+    }
+    public boolean getZombie() {
+    	return zombie;
     }
 }

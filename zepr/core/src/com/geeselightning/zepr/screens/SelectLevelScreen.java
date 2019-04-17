@@ -159,11 +159,16 @@ public class SelectLevelScreen implements Screen {
                 try {
                     edit = new FileOutputStream(f);
                     byte[] lvl = (Integer.toString(Zepr.progress.ordinal())).getBytes();
+                    byte[] cure1 = Boolean.toString(parent.isCure1()).getBytes();
+                    byte[] cure2 = Boolean.toString(parent.isCure2()).getBytes();
+                    byte[] cure3 = Boolean.toString(parent.isCure3()).getBytes();
                     edit.write(lvl);
+                    edit.write(cure1);
+                    edit.write(cure2);
+                    edit.write(cure3);
                     edit.close();
                     Gdx.app.log("Save status", "Saved!");
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 parent.changeScreen(Zepr.Location.SELECT);
@@ -179,9 +184,22 @@ public class SelectLevelScreen implements Screen {
                 try {
                     br = new BufferedReader(new FileReader(f));
                     String stage;
+                    String cure1,cure2,cure3;
                     while ((stage = br.readLine()) != null) {
                         Gdx.app.log("Player stage progress", "Player is on stage " + stage);
                         Zepr.progress = Zepr.Location.values()[Integer.parseInt(stage)];
+                    }
+                    while ((cure1 = br.readLine()) != null) {
+                        Gdx.app.log("Player cure progress", "Player had found cure ingredient 1");
+                        parent.setCure1(Boolean.parseBoolean(cure1));
+                    }
+                    while ((cure2 = br.readLine()) != null) {
+                        Gdx.app.log("Player cure progress", "Player had found cure ingredient 2");
+                        parent.setCure2(Boolean.parseBoolean(cure2));
+                    }
+                    while ((cure3 = br.readLine()) != null) {
+                        Gdx.app.log("Player cure progress", "Player had found cure ingredient 3");
+                        parent.setCure3(Boolean.parseBoolean(cure3));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

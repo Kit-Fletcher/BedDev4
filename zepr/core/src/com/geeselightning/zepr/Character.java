@@ -30,7 +30,7 @@ public class Character extends Sprite implements Steerable<Vector2> {
     Body body;
     private static BodyDef characterBodyDef = new BodyDef() {{ type = BodyDef.BodyType.DynamicBody; }};
     // Implementation of Steerable<Vector2> Interface
-    public enum SteeringState {WANDER, SEEK, ARRIVE, NONE}
+    public enum SteeringState {WANDER, SEEK, ARRIVE, FLEE, NONE}
     SteeringState currentMode;
     private float maxLinearSpeed = Constant.ZOMBIESPEED;
     private float maxLinearAcceleration = 2f;

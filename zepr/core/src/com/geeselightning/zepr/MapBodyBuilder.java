@@ -35,7 +35,6 @@ class MapBodyBuilder {
 		Array<Body> bodies = new Array<>();
 
 		for (MapObject object : objects) {
-
 			if (object instanceof TextureMapObject) {
 				continue;
 			}
@@ -58,6 +57,10 @@ class MapBodyBuilder {
 			bd.type = BodyType.StaticBody;
 			Body body = world.createBody(bd);
 			body.createFixture(shape, 1);
+			if(object.getName() != null) {
+				body.setUserData("wall");
+			}
+			
 
 			bodies.add(body);
 
