@@ -24,6 +24,7 @@ import com.geeselightning.zepr.screens.TextScreen;
 import java.util.ArrayList;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 
 public class Level implements Screen {
@@ -230,10 +231,18 @@ public class Level implements Screen {
     private void saveGame() {
         File f = new File("saveData.txt");
         FileOutputStream edit;
-        try {
+        try (PrintWriter  p = new PrintWriter(edit = new FileOutputStream(f))){
             edit = new FileOutputStream(f);
-            byte[] lvl = (Integer.toString(Zepr.progress.ordinal())).getBytes();
-            edit.write(lvl);
+            String lvl = (Integer.toString(Zepr.progress.ordinal()));
+            String cure1 = Boolean.toString(parent.isCure1());
+            String cure2 = Boolean.toString(parent.isCure2());
+            String cure3 = Boolean.toString(parent.isCure3());
+            p.println(lvl);
+            p.println(cure1);
+            p.println(cure2);
+            p.println(cure3);
+            p.flush();
+            p.close();
             edit.close();
             Gdx.app.log("Save status", "Saved!");
         } catch (Exception e) {
