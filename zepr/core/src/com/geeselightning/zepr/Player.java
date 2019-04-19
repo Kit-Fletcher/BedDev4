@@ -154,7 +154,6 @@ public class Player extends Character {
 		}
     }
 		
-    
     /**
      * Returns the value of time since beginning of stage
      * @return the value of time since beginning of stage
@@ -200,6 +199,7 @@ public class Player extends Character {
         if(ability) {
         	triggerAbility();
         }
+        
         else if(this.timer()>abilityCooldown+2 && abilityUsed) {
         	this.refreshAttributes();
         }

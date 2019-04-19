@@ -352,6 +352,9 @@ public class Level implements Screen {
 
         if (Gdx.input.isKeyPressed(Keys.ESCAPE))
             pauseGame();
+        if (Gdx.input.isKeyPressed(Keys.C)) {
+        	checkCure();
+        }
     }
 
     /**
@@ -533,7 +536,7 @@ public class Level implements Screen {
 
     private void checkCure() {
     	//TODO change to activate button or if you die?
- 
+  
     	if (parent.isCure1() && parent.isCure2() && parent.isCure3() || useCure) {
     		//TODO get rid of zombies (loop)
     		spawnNPC();
