@@ -24,6 +24,7 @@ public class CustomContactListener implements ContactListener {
 //	    System.out.println(bodyB.getUserData());
 		if((bodyA.getUserData() == "wall" && bodyB.getUserData() == "NPC") || (bodyA.getUserData() == "NPC" && bodyB.getUserData() == "wall")){
 			if(bodyA.getUserData() == "NPC") {
+				
 				bodyA.setUserData("escape");
 			}else {
 				bodyB.setUserData("escape");

@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.PrintWriter;
 
 public class SelectLevelScreen implements Screen {
 
@@ -154,18 +155,20 @@ public class SelectLevelScreen implements Screen {
         save.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                File f = new File("saveData.txt");
+            	File f = new File("saveData.txt");
                 FileOutputStream edit;
-                try {
+                try (PrintWriter  p = new PrintWriter(edit = new FileOutputStream(f))){
                     edit = new FileOutputStream(f);
-                    byte[] lvl = (Integer.toString(Zepr.progress.ordinal())).getBytes();
-                    byte[] cure1 = Boolean.toString(parent.isCure1()).getBytes();
-                    byte[] cure2 = Boolean.toString(parent.isCure2()).getBytes();
-                    byte[] cure3 = Boolean.toString(parent.isCure3()).getBytes();
-                    edit.write(lvl);
-                    edit.write(cure1);
-                    edit.write(cure2);
-                    edit.write(cure3);
+                    String lvl = (Integer.toString(Zepr.progress.ordinal()));
+                    String cure1 = Boolean.toString(parent.isCure1());
+                    String cure2 = Boolean.toString(parent.isCure2());
+                    String cure3 = Boolean.toString(parent.isCure3());
+                    p.println(lvl);
+                    p.println(cure1);
+                    p.println(cure2);
+                    p.println(cure3);
+                    p.flush();
+                    p.close();
                     edit.close();
                     Gdx.app.log("Save status", "Saved!");
                 } catch (Exception e) {
@@ -188,18 +191,22 @@ public class SelectLevelScreen implements Screen {
                     while ((stage = br.readLine()) != null) {
                         Gdx.app.log("Player stage progress", "Player is on stage " + stage);
                         Zepr.progress = Zepr.Location.values()[Integer.parseInt(stage)];
+                        break;
                     }
                     while ((cure1 = br.readLine()) != null) {
                         Gdx.app.log("Player cure progress", "Player had found cure ingredient 1");
                         parent.setCure1(Boolean.parseBoolean(cure1));
+                        break;
                     }
                     while ((cure2 = br.readLine()) != null) {
                         Gdx.app.log("Player cure progress", "Player had found cure ingredient 2");
                         parent.setCure2(Boolean.parseBoolean(cure2));
+                        break;
                     }
                     while ((cure3 = br.readLine()) != null) {
                         Gdx.app.log("Player cure progress", "Player had found cure ingredient 3");
                         parent.setCure3(Boolean.parseBoolean(cure3));
+                        break;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
