@@ -16,6 +16,7 @@ public class PowerUp extends Sprite {
     protected Player player;
     public String powerUpString;
     public static String activePowerUp;
+    protected boolean cure;
 
     /**
      * Constructor for the generic power up class
@@ -36,6 +37,7 @@ public class PowerUp extends Sprite {
         
         this.powerUpString = powerUpString;
         
+        cure = false;
     }
 
     /**
@@ -96,5 +98,7 @@ public class PowerUp extends Sprite {
         return active;
     }
 
-	
+	public boolean isCure() {
+		return cure;
+	}
 }

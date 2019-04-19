@@ -22,6 +22,7 @@ public class PowerUpSpeed extends PowerUp {
     @Override
     public void activate() {
         super.activate();
+        System.out.println("working set speedup");
         player.setSpeed(player.getSpeed() + Constant.SPEEDUP);
     }
 

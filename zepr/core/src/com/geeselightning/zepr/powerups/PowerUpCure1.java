@@ -14,11 +14,13 @@ public class PowerUpCure1 extends PowerUp {
      */
     public PowerUpCure1(Level currentLevel, Player player) {
         super(new Texture("cure1.png"), currentLevel, player, 0, "Cure1 PowerUp Collected");
+        cure = true;
     }
 
     @Override
     public void activate(Zepr zepr) {
         super.activate();
+        System.out.println("working cure 1");
         zepr.setCure1(true);
     }
 

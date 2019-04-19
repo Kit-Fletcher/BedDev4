@@ -14,6 +14,7 @@ public class PowerUpCure3 extends PowerUp {
      */
     public PowerUpCure3(Level currentLevel, Player player) {
         super(new Texture("cure3.png"), currentLevel, player, 0, "Cure3 PowerUp Collected");
+        cure = true;
     }
 
     @Override
