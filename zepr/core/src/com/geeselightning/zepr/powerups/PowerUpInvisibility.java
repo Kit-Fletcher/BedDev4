@@ -22,6 +22,7 @@ public class PowerUpInvisibility extends PowerUp {
     @Override
     public void activate() {
         super.activate();
+        System.out.println("working set invis");
         player.setVisible(false); //player is undetectable for 5 seconds
     }
 

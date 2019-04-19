@@ -51,7 +51,7 @@ public class Level implements Screen {
     private LevelConfig config;
     private World world;
     private int teleportCounter;
-    private Label progressLabel, healthLabel, powerUpLabel, abilityLabel, tutorialLabel;
+    private Label progressLabel, healthLabel, powerUpLabel, abilityLabel, cureLabel, tutorialLabel;
     static Texture blank;
     private Zombie originalBoss;
     private Boolean useCure = false; 
@@ -82,6 +82,7 @@ public class Level implements Screen {
         healthLabel = new Label("", skin);
         powerUpLabel = new Label("", skin);
         abilityLabel = new Label("", skin);
+        cureLabel = new Label("", skin);
          
         // Set up data for first wave of zombies
         this.zombiesRemaining = config.waves[0].numberToSpawn;
@@ -284,6 +285,8 @@ public class Level implements Screen {
         table.add(powerUpLabel).pad(10).left();
         table.row();
         table.add(abilityLabel).pad(10).left();
+        table.row();
+        table.add(cureLabel).pad(10).left();
         
         if(tutorialTable != null && currentWaveNumber == 1) {
         	tutorialTable.top();
@@ -334,8 +337,15 @@ public class Level implements Screen {
                     // Activate the powerup up if the player moves over it and it's not already active
                     // Only render the powerup if it is not active, otherwise it disappears
                     if (!currentPowerUp.isActive()) {
-                        if (currentPowerUp.overlapsPlayer())
-                            currentPowerUp.activate();
+                        if (currentPowerUp.overlapsPlayer()) {
+                        	System.out.println("powerup activate being called");
+                        	if(currentPowerUp.isCure()) {
+                        		currentPowerUp.activate(parent);
+                        	} else {
+                        		currentPowerUp.activate();
+                        	}
+                        	
+                        }
                         currentPowerUp.draw(batch);
                     }
                     currentPowerUp.update(delta);
@@ -515,19 +525,36 @@ public class Level implements Screen {
         String progressString = ("Wave " + currentWaveNumber + ", " + zombiesRemaining + " zombies remaining.");
         String healthString = ("Health: " + player.health + "HP");
         String abilityString;
+        String cureString;
         String powerUpString = PowerUp.activePowerUp;
-
+        
         if(player.ability)
             abilityString = ("Press E to trigger special ability");
         else if(player.abilityUsed)
             abilityString = player.abilityString;
         else
             abilityString = ("Special ability used");
-
+        
+        int cureTotal = 0;
+        if(parent.isCure1())
+        	cureTotal ++;
+        if(parent.isCure2())
+        	cureTotal ++;
+        if(parent.isCure3())
+        	cureTotal ++;
+        
+        if(cureTotal == 3) {
+        	cureString = ("Cure assembled, press C to use");
+        } 
+        else 
+        	cureString = ("Secret cure parts found " + cureTotal + "/3");
+        
+        
         progressLabel.setText(progressString);
         powerUpLabel.setText(powerUpString);
         healthLabel.setText(healthString);
         abilityLabel.setText(abilityString);
+        cureLabel.setText(cureString);
 
         if(tutorialTable != null && currentWaveNumber == 1)
             tutorialLabel.setText("TUTORIAL WAVE \n\n Up: W \n Left: A \n Down: S \n Right: D \n Attack: Left Click \n Look: Mouse \n Special Ability: E");

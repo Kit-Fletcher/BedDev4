@@ -22,6 +22,7 @@ public class PowerUpInstaKill extends PowerUp {
     @Override
     public void activate() {
         super.activate();
+        System.out.println("working set instakill");
         player.setBoostDamage(10);
     }
 

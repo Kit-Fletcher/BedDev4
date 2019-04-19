@@ -22,7 +22,7 @@ public class PowerUpHeal extends PowerUp {
     @Override
     public void activate() {
         super.activate();
-
+        System.out.println("working set health");
         //Health cannot be more than max health
         if(player.getHealth() + Constant.HEALUP < (int)(player.getHPMult() * Constant.PLAYERMAXHP))
         	player.setHealth(player.getHealth() + Constant.HEALUP);
