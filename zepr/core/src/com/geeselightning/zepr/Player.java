@@ -211,6 +211,7 @@ public class Player extends Character {
         	}
         	if(this.timer() > zombieHealthTimer+0.5) {
         		zombieHealthTimer = this.timer();
+        		
         		decrementHealth();
         	}
         }

@@ -424,7 +424,9 @@ public class Level implements Screen {
         }
 
         if (zombiesRemaining == 0 && npcsRemaining ==0) {
-
+        	if (player.getZombie()){
+        		gameOver();
+        	}
             // Spawn a power up and the end of a wave, if there isn't already a powerUp on the level
             //#changed:   Added code for the new power ups here
             if (currentPowerUp == null) {
