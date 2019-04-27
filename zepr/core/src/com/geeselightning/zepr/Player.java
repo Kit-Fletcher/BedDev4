@@ -323,7 +323,7 @@ public class Player extends Character {
     }
     
     private void decrementHealth() {
-    	setHealth(getHealth()-35);
+    	setHealth(getHealth()-15);
     }
     //TODO call when npc dies
     public void incrementHealth() {
