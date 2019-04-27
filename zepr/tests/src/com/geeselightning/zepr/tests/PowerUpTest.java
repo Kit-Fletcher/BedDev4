@@ -8,6 +8,9 @@ import com.geeselightning.zepr.*;
 import com.geeselightning.zepr.powerups.PowerUpHeal;
 import com.geeselightning.zepr.powerups.PowerUpImmunity;
 import com.geeselightning.zepr.powerups.PowerUpSpeed;
+import com.geeselightning.zepr.powerups.PowerUpCure1;
+import com.geeselightning.zepr.powerups.PowerUpCure2;
+import com.geeselightning.zepr.powerups.PowerUpCure3;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
@@ -176,6 +179,26 @@ public class PowerUpTest {
         player.takeDamage(30);
         assertEquals("Player should take 30 damage after immunity is deactivated.", originalHealth-30,
                 player.getHealth(), 0.1);
+        player.dispose();
+        world.dispose();
+    }
+    
+    @Test
+    // Test 4.11
+    public void allCureBooleansToggledOnPickup() {
+    	World world = new World(new Vector2(0, 0), true);
+        Player player = new Player(new Texture("player01.png"), new Vector2(0, 0), world);
+    	PowerUpCure1 cure1 = new PowerUpCure1(null, player);
+    	PowerUpCure2 cure2 = new PowerUpCure2(null, player);
+    	PowerUpCure3 cure3 = new PowerUpCure3(null, player);
+    	cure1.activate();
+    	cure2.activate();
+    	cure3.activate();
+    	boolean allCures = cure1.isCure() && cure2.isCure() && cure3.isCure();
+    	cure1.deactivate();
+    	cure2.deactivate();
+    	cure3.deactivate();
+    	assertTrue("Cure should activate once all 3 ingredients found", allCures);
         player.dispose();
         world.dispose();
     }
