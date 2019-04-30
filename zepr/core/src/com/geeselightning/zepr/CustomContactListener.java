@@ -16,24 +16,18 @@ public class CustomContactListener implements ContactListener {
 
 	@Override
 	public void beginContact(Contact contact) {
-		// TODO Auto-generated method stub
+		
 		//Get the Box2D bodies that collided
 		Body bodyA = contact.getFixtureA().getBody();
 		Body bodyB = contact.getFixtureB().getBody();
-//		System.out.println(bodyA.getUserData());
-//	    System.out.println(bodyB.getUserData());
 		if((bodyA.getUserData() == "wall" && bodyB.getUserData() == "NPC") || (bodyA.getUserData() == "NPC" && bodyB.getUserData() == "wall")){
+			//Sets the body user data to escape so the NPC can be removed
 			if(bodyA.getUserData() == "NPC") {
-				
 				bodyA.setUserData("escape");
 			}else {
 				bodyB.setUserData("escape");
 			}
 		}
-		//Extract extra data from the bodies
-		//InfoContainer a = (InfoContainer)bodyA.getUserData();
-		//InfoContainer b = (InfoContainer)bodyB.getUserData();
-		
 	}
 
 	@Override

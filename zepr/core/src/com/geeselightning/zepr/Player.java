@@ -120,6 +120,11 @@ public class Player extends Character {
             hitRefresh += delta;
         }
     
+    /**
+     * Method to kill npc
+     * @param npc the npc being attacked
+     * @param delta
+     */
     public void turnNPC(NPC npc, float delta) {
     	if(canHitGlobal(npc, 25)) {
     		npc.setHealth(0);
@@ -128,6 +133,7 @@ public class Player extends Character {
              sound.play(0.2f);
     	}
     }
+    
     /**
      * Manages the abilities when special ability is triggered by E
      * #changed:   Added this method
@@ -223,7 +229,6 @@ public class Player extends Character {
         }
         else {
         // Changes the texture back to the main one after 0.1s.
-        //if (hitRefresh > 0.1 && getTexture() == attackTexture) {
             setTexture(mainTexture);
         	attacking = false;
         }
@@ -296,7 +301,6 @@ public class Player extends Character {
      */
     public void setZombie(boolean zomb) {
     	zombie = zomb;
-    	//TODO change to the player zombie and figure out why it doesnt work right
     	if (zombie) {
     		setRegion(new Texture("zombie01.png"));
         	mainTexture = new Texture("zombie01.png");
@@ -325,10 +329,11 @@ public class Player extends Character {
     private void decrementHealth() {
     	setHealth(getHealth()-15);
     }
-    //TODO call when npc dies
+
     public void incrementHealth() {
     	setHealth(getHealth() +20);
     }
+    
     public boolean getZombie() {
     	return zombie;
     }

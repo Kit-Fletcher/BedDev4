@@ -9,9 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.geeselightning.zepr.Zombie.Type;
 
 public class NPC extends Character {
-	private World world;
-    private int hitRange;
-    //public enum Type { ZOMBIE1, ZOMBIE2, ZOMBIE3, BOSS1, BOSS2 }
+
     /**
      * Constructor for the NPC class
      * @param NPCSpawn the coordinates to spawn the NPC at
@@ -21,7 +19,6 @@ public class NPC extends Character {
      */
     public NPC(Vector2 NPCSpawn, World world,Type type) {
         super(world);
-        this.world = world;
         speed = Constant.NPCSPEED;
         attackDamage = Constant.NPCDMG;
         maxhealth = Constant.NPCMAXHP;
@@ -32,12 +29,10 @@ public class NPC extends Character {
         body.setLinearDamping(50f);
         setCharacterPosition(NPCSpawn);
         body.setUserData("NPC");
-        hitRange = (int) (Constant.NPCRANGE*getWidth()/30 - getWidth()*getHealth()/1200);
     }
-  
 
     /**
-     * Method to run away from player. 
+     * Update method, involves steering behaviour.
      * @param delta the time between the start of the previous call and now
      *           Added LibGDX AI steering behaviour and wandering when player undetected.
      */
@@ -51,7 +46,6 @@ public class NPC extends Character {
             this.steeringBehavior = SteeringPresets.getFlee(this, Level.getPlayer());
             this.currentMode = SteeringState.FLEE; 
             // update direction to face away from the player
-            //direction = - getDirectionTo(Level.getPlayer().getCenter());
             direction = -(this.vectorToAngle(this.getLinearVelocity()));
         } else { //player cannot be seen, so wander randomly
             this.steeringBehavior = SteeringPresets.getWander(this);
@@ -59,13 +53,14 @@ public class NPC extends Character {
             // update direction to face direction of travel
             direction = -(this.vectorToAngle(this.getLinearVelocity()));
         }
+        //NPC removed upon reaching an exit wall
         if(checkCollision()) {
         	this.setHealth(0);
         }
     }
 
     
-    
+    //Checks if the NPC has hit a wall and should therefore be removed
     private Boolean	checkCollision() {
     	if(body.getUserData() == "escape") {
     		return true;

@@ -45,7 +45,7 @@ public class Level implements Screen {
     private int currentWaveNumber;
     private int zombiesRemaining; // the number of zombies left to kill to complete the wave
     private int zombiesToSpawn; // the number of zombies that are left to be spawned this wave
-    private int npcsRemaining;
+    private int npcsRemaining; // number of npcs left on the screen
     private PowerUp currentPowerUp;
     //private Box2DDebugRenderer debugRenderer;
     private LevelConfig config;
@@ -135,6 +135,7 @@ public class Level implements Screen {
 
         teleportCounter = 0;
         currentWaveNumber = 0;
+        //sets the contact listener to allow for NPC wall detection
         world.setContactListener(new CustomContactListener());
         resumeGame();
     }
@@ -152,7 +153,7 @@ public class Level implements Screen {
     }
 
     /**
-     * Called when the player's health <= 0 to end the stage.
+     * Called when the player is a zombie and their health <= 0 to end the stage.
      */
     private void gameOver() {
         isPaused = true;
@@ -174,8 +175,12 @@ public class Level implements Screen {
             aliveZombies.add(zombie);
             if(type == Zombie.Type.BOSS2 && aliveZombies.size()==1)
                 originalBoss = zombie;
+        }
     }
-}
+    
+    /**
+     * Spawns an NPC for every zombie in the map
+     */
     private void spawnNPC() {
     	 for(Zombie zombie :aliveZombies) {
     		 NPC npc = new NPC(zombie.getCenter(),world, zombie.getType());
@@ -183,6 +188,9 @@ public class Level implements Screen {
     	 }
     }
 
+    /**
+     * Despawns all zombies
+     */
     private void despawnZombies() {
     	for ( Zombie zombie : aliveZombies) {
     		zombie.setHealth(0);
@@ -329,7 +337,8 @@ public class Level implements Screen {
                 // Draw zombies
                 for (Zombie zombie : aliveZombies)
                     zombie.draw(batch);
-
+                
+                // Draw NPCs
                 for (NPC npc : aliveNPC)
                     npc.draw(batch);
 
@@ -338,7 +347,6 @@ public class Level implements Screen {
                     // Only render the powerup if it is not active, otherwise it disappears
                     if (!currentPowerUp.isActive()) {
                         if (currentPowerUp.overlapsPlayer()) {
-                        	System.out.println("powerup activate being called");
                         	if(currentPowerUp.isCure()) {
                         		currentPowerUp.activate(parent);
                         	} else {
@@ -362,10 +370,8 @@ public class Level implements Screen {
 
         if (Gdx.input.isKeyPressed(Keys.ESCAPE))
             pauseGame();
+        
         if (Gdx.input.isKeyPressed(Keys.C)) {
-        	System.out.println("1 " + parent.isCure1());
-        	System.out.println("2 " + parent.isCure2());
-        	System.out.println("3 " + parent.isCure3());
         	if(parent.isCure1() && parent.isCure2() && parent.isCure3()) {
         		useCure = true;
         		checkCure();
@@ -394,11 +400,12 @@ public class Level implements Screen {
 
         // When you die, end the level.
         if (player.health <= 0)
-        	//TODO change so player becomes zombie and zombies become npcs
+        	//Gameover if they die as a zombie and turn into a zombie if not
             if (player.getZombie()) {
                 gameOver();
                 useCure = false;
             } else {
+            	
                 player.setZombie(true);
                 useCure = true;
             }
@@ -415,6 +422,7 @@ public class Level implements Screen {
                 zomb.dispose();
             }
         }
+        //NPC removal code
         for(int i = 0; i < aliveNPC.size(); i++) {
         	NPC npc = aliveNPC.get(i);
         	npc.update(delta);
@@ -427,6 +435,7 @@ public class Level implements Screen {
 
         zombiesRemaining = aliveZombies.size();
         npcsRemaining = aliveNPC.size();
+        
         // Resolve all possible attacks
         if (player.getZombie()) {
         	for (NPC npc : aliveNPC) {
@@ -482,7 +491,7 @@ public class Level implements Screen {
                 }
             }
 
-            //TODO check if zombies or NPCs are not there to start next wave
+            
             if (currentWaveNumber > config.waves.length) {
                 // Level completed, back to select screen and complete stage.
                 isPaused = true;
@@ -512,7 +521,6 @@ public class Level implements Screen {
 
             // Spawn all zombies in the stage
             spawnZombies(zombiesToSpawn, config.zombieSpawnPoints);
-            //spawnNPC();
         }
 
         //Teleporting and minon spawning behavior for boss2
@@ -570,9 +578,8 @@ public class Level implements Screen {
     }
 
     private void checkCure() {
-    	//TODO change to activate button or if you die?
+    	//Activate the cure if it has been used
     	if (useCure) {
-    		//TODO get rid of zombies (loop)
     		spawnNPC();
     		despawnZombies();
     		parent.setCure1(false);
@@ -580,10 +587,6 @@ public class Level implements Screen {
     		parent.setCure3(false);
     	}
     }
-    
-//    public ArrayList<NPC> getNPC() {
-//    	return aliveNPC;
-//    }
     
     /**
      * Resize method, called when the game window is resized
